@@ -24,6 +24,7 @@ exports.protect = (req, res, next) => {
 };
 
 // Restrict access based on roles
+// checks req.user.role and allows access only if user role matches one of the allowed roles
 exports.authorizeRoles = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
