@@ -1,5 +1,9 @@
-const cloudinary = require('cloudinary').v2;
-const multer = require('multer');
+/* This file performs two main tasks:
+1) Configures Cloudinary so application can upload files to your Cloudinary account.
+2) Configures Multer to receive PDF files from the frontend before sending them to Cloudinary.*/
+
+const cloudinary = require('cloudinary').v2; // Cloudinary provides Version 2 of its API.
+const multer = require('multer'); // for uploading PDF files.
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -11,13 +15,15 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Use Multer's memory storage to handle the file buffer temporarily
+// Use Multer's memory storage.
 const storage = multer.memoryStorage();
 
 // File filter to enforce PDF-only uploads
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
-        cb(null, true);
+        // cb means callback function. The first argument is an error (null means no error), 
+        // and the second argument is a boolean indicating whether to accept the file.
+        cb(null, true); 
     } else {
         cb(new Error('Invalid file type. Only PDF uploads are allowed!'), false);
     }
