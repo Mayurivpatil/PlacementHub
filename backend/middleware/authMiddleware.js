@@ -1,7 +1,8 @@
 // middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
-// Verify standard user token
+// Authentication 
+// Verify user token -- Checks whether the user is logged in (JWT Authentication).
 exports.protect = (req, res, next) => {
     let token;
 
@@ -23,7 +24,7 @@ exports.protect = (req, res, next) => {
     }
 };
 
-// Restrict access based on roles
+// Restrict access based on roles (Authorization)
 // checks req.user.role and allows access only if user role matches one of the allowed roles
 exports.authorizeRoles = (...roles) => {
     return (req, res, next) => {
