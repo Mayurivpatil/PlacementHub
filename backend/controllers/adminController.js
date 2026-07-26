@@ -5,7 +5,7 @@ const db = require('../config/db');
 // @access   Private (Admin only)
 exports.getAdminStats = async (req, res) => {
     try {
-        // Run aggregation queries in parallel with Promise.all for optimized backend throughput
+        // Run aggregation queries in parallel with Promise.all for All queries execute simultaneously, making the dashboard load faster.
         const [
             [studentsCount],
             [companiesCount],
@@ -14,9 +14,9 @@ exports.getAdminStats = async (req, res) => {
             [branchStats]
         ] = await Promise.all([
             db.query('SELECT COUNT(*) AS total FROM students'),
-            db.query('SELECT COUNT(*) AS total FROM companies'),
+            db.query('SELECT COUNT(*) AS total FROM companies where is_verified = TRUE'),
             db.query('SELECT COUNT(*) AS total FROM placement_drives'),
-            db.query("SELECT COUNT(*) AS total FROM applications WHERE status = 'Selected'"),
+            db.query("SELECT COUNT(*) AS total FROM applications WHERE status = 'Selected'"),  // Counts students whose status is 'Selected'.
             db.query(`
                 SELECT s.branch, 
                        COUNT(DISTINCT s.id) AS total_students,
@@ -81,33 +81,6 @@ exports.getReportData = async (req, res) => {
     }
 };
 
-// @desc     Get analytics overview for Student Dashboard
-// @route    GET /api/admin/student-metrics
-// @access   Private (Student only)
-exports.getStudentDashboardMetrics = async (req, res) => {
-    try {
-        const [student] = await db.query('SELECT id FROM students WHERE user_id = ?', [req.user.id]);
-        if (student.length === 0) return res.status(404).json({ message: 'Profile mismatch.' });
-        const studentId = student[0].id;
-
-        // Execute student metric aggregations concurrently
-        const [
-            [appliedCount],
-            [interviewCount]
-        ] = await Promise.all([
-            db.query('SELECT COUNT(*) AS total FROM applications WHERE student_id = ?', [studentId]),
-            db.query("SELECT COUNT(*) AS total FROM applications WHERE student_id = ? AND status = 'Shortlisted'", [studentId])
-        ]);
-
-        res.status(200).json({
-            appliedCompanies: appliedCount[0].total,
-            upcomingInterviews: interviewCount[0].total
-        });
-    } catch (error) {
-        console.error('Error processing student metrics:', error);
-        res.status(500).json({ message: 'Error processing student metrics dashboard.' });
-    }
-};
 
 // ==========================================
 // NEW COMPANY VERIFICATION OPERATIONS
@@ -153,7 +126,7 @@ exports.approveCompany = async (req, res) => {
     }
 };
 
-// @desc     Get deep company profile variables for detail view drawers
+// @desc     Shows company details.
 // @route    GET /api/admin/company-profile/:id
 // @access   Private (Admin only)
 exports.getCompanyProfile = async (req, res) => {

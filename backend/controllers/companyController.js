@@ -36,15 +36,22 @@ exports.updateCompanyProfile = async (req, res) => {
 };
 
 // ==========================================
-// NEW: ACTIVE RECRUITMENT DRIVES WITH INTERVIEWS
+// ACTIVE RECRUITMENT DRIVES WITH INTERVIEWS
 // ==========================================
+/*It collects:
+
+Company drives
+Student applications
+Student information
+Interview schedules
+and returns them in one API response.*/
 
 // @desc    Get all active hiring drives with applicant rows and scheduled interviews
 // @route   GET /api/company/active-drives
 // @access  Private (Company only)
 exports.getCompanyActiveDrives = async (req, res) => {
     try {
-        // 1. Find the distinct company profile ID mapped to the currently authenticated user session
+        // 1. Find the company profile ID mapped to the currently logged in user
         const [company] = await db.query('SELECT id FROM companies WHERE user_id = ?', [req.user.id]);
         if (company.length === 0) {
             return res.status(404).json({ message: 'Company account record missing.' });
@@ -52,6 +59,11 @@ exports.getCompanyActiveDrives = async (req, res) => {
         const companyId = company[0].id;
 
         // 2. Fetch job drives joined against student applications, metadata records, and conditional interview pipelines
+        /* The company wants to see:
+        All placement drives it has created.
+        Students who applied for each drive.
+        Each student's details.
+        Interview details (if an interview has been scheduled).*/
         const query = `
             SELECT 
                 pd.id AS drive_id, pd.job_role, pd.package, pd.eligibility_cgpa, pd.last_date,
@@ -59,12 +71,12 @@ exports.getCompanyActiveDrives = async (req, res) => {
                 s.id AS student_id, u.name AS student_name, s.branch, s.cgpa,
                 i.interview_date, i.interview_time, i.interview_mode, i.meeting_link
             FROM placement_drives pd
-            LEFT JOIN applications a ON pd.id = a.drive_id
-            LEFT JOIN students s ON a.student_id = s.id
-            LEFT JOIN users u ON s.user_id = u.id
-            LEFT JOIN interviews i ON a.id = i.application_id
-            WHERE pd.company_id = ?
-            ORDER BY pd.id DESC, s.cgpa DESC
+            LEFT JOIN applications a ON pd.id = a.drive_id  //company sees all its drives, even if no one has applied yet. 
+            LEFT JOIN students s ON a.student_id = s.id     //Applications contain only the student ID.
+            LEFT JOIN users u ON s.user_id = u.id           //Users table contains the student name.
+            LEFT JOIN interviews i ON a.id = i.application_id     //If an interview has been scheduled, it will be joined here.
+            WHERE pd.company_id = ?                               //Filter only the drives belonging to the logged-in company
+            ORDER BY pd.id DESC, s.cgpa DESC                      //Sort by drive ID and then by student CGPA in descending order (Newer drives with higher CGPA first)
         `;
 
         const [rows] = await db.query(query, [companyId]);
@@ -104,7 +116,7 @@ exports.getCompanyActiveDrives = async (req, res) => {
             }
         });
 
-        // Respond back to frontend with formatted array list blocks
+        // Respond back to frontend with formatted array list blocks (Convert Object to Array)
         res.status(200).json(Object.values(drivesMap));
     } catch (error) {
         console.error('Error compiling company recruitment overview:', error);

@@ -20,26 +20,28 @@ exports.uploadResume = async (req, res) => {
         // 2. Initialize an upload stream targeting the image delivery container
         const uploadStream = () => {
             return new Promise((resolve, reject) => {
+                // accepts data as a stream.
                 const stream = cloudinary.uploader.upload_stream(
                     {
                         folder: 'placement_hub_resumes',
-                        resource_type: 'auto', 
-                        public_id: `student_${studentId}_resume_${Date.now()}` // Cloudinary will append the format automatically
+                        resource_type: 'auto',  // auto means Cloudinary automatically detects the file type.
+                        public_id: `student_${studentId}_resume_${Date.now()}` // Every upload gets a unique name.
                     },
+                    // callback function. Cloudinary responds after upload.
                     (error, result) => {
-                        if (result) resolve(result);
-                        else reject(error);
+                        if (result) resolve(result); // The Promise finishes successfully.
+                        else reject(error);         // The Promise throws an exception.
                     }
                 );
-                // Pipe your raw multer storage memory buffer straight in
+                // sends the entire buffer directly to Cloudinary.
                 stream.end(req.file.buffer);
             });
         };
 
         const cloudinaryResult = await uploadStream();
-        const secureUrl = cloudinaryResult.secure_url;
+        const secureUrl = cloudinaryResult.secure_url;  // This URL points to the uploaded resume.
 
-        // 3. Save the resulting clean web URL back to the students table row
+        // 3. Save URL back to the students table row
         await db.query('UPDATE students SET resume_url = ? WHERE id = ?', [secureUrl, studentId]);
 
         res.status(200).json({

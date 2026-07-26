@@ -1,30 +1,5 @@
 const db = require('../config/db');
 
-// @desc    Update application status (e.g., Shortlist or Reject)
-// @route   PUT /api/interviews/status/:applicationId
-// @access  Private (Company or Admin)
-exports.updateApplicationStatus = async (req, res) => {
-    const { status } = req.body;
-    const { applicationId } = req.params;
-
-    if (!['Applied', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status value provided.' });
-    }
-
-    try {
-        const [app] = await db.query('SELECT id FROM applications WHERE id = ?', [applicationId]);
-        if (app.length === 0) {
-            return res.status(404).json({ message: 'Application record not found.' });
-        }
-
-        await db.query('UPDATE applications SET status = ? WHERE id = ?', [status, applicationId]);
-        res.status(200).json({ message: `Application status updated to '${status}' successfully!` });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error while updating application status.' });
-    }
-};
-
 // @desc    Schedule or Reschedule an interview
 // @route   POST /api/interviews/schedule
 // @access  Private (Company or Admin)
@@ -36,13 +11,16 @@ exports.scheduleInterview = async (req, res) => {
     }
 
     try {
+        // Verify that the application exists before scheduling an interview
         const [app] = await db.query('SELECT id, status FROM applications WHERE id = ?', [application_id]);
         if (app.length === 0) {
             return res.status(404).json({ message: 'Application record not found.' });
         }
 
+        // A transaction groups multiple SQL statements into one logical operation.
         await db.query('START TRANSACTION');
 
+        // Purpose - New interview or rescheduled interview.
         const [existing] = await db.query(
             'SELECT interview_date, interview_time, interview_mode, meeting_link FROM interviews WHERE application_id = ?',
             [application_id]
@@ -59,6 +37,7 @@ exports.scheduleInterview = async (req, res) => {
             }
         }
 
+        // If interview doesn't exist -> Insert. If it exists -> Update.
         await db.query(
             `INSERT INTO interviews (application_id, interview_date, interview_time, interview_mode, meeting_link, venue) 
              VALUES (?, ?, ?, ?, ?, ?)
@@ -79,17 +58,17 @@ exports.scheduleInterview = async (req, res) => {
         );
 
         await db.query("UPDATE applications SET status = 'Interview Scheduled' WHERE id = ?", [application_id]);
-        await db.query('COMMIT');
+        await db.query('COMMIT');  // Save permanently.
 
         res.status(200).json({ message: 'Interview slot processed and changes archived successfully!' });
     } catch (error) {
-        await db.query('ROLLBACK');
+        await db.query('ROLLBACK');   // Undo any changes made during the transaction in case of error
         console.error('Error in scheduleInterview transaction:', error);
         res.status(500).json({ message: 'Server error while scheduling interview.' });
     }
 };
 
-// @desc    Get upcoming interviews for logged-in student (With structural venue visibility mapping)
+// @desc    Get upcoming interviews for logged-in student 
 // @route   GET /api/interviews/my-schedule
 // @access  Private (Student only)
 exports.getStudentSchedule = async (req, res) => {
@@ -108,7 +87,7 @@ exports.getStudentSchedule = async (req, res) => {
              JOIN placement_drives pd ON a.drive_id = pd.id
              JOIN companies c ON pd.company_id = c.id
              WHERE a.student_id = ?
-               AND i.interview_date >= CURDATE()
+               AND i.interview_date >= CURDATE()  // Only fetch upcoming interviews
              ORDER BY i.interview_date ASC, i.interview_time ASC`,
             [student[0].id]
         );
@@ -120,7 +99,7 @@ exports.getStudentSchedule = async (req, res) => {
     }
 };
 
-// // @desc    Get rescheduled timeline history logs for active student context
+// // @desc   Shows rescheduled interviews.
 // // @route   GET /api/interviews/my-history
 // // @access  Private (Student only)
 exports.getStudentHistoryLogs = async (req, res) => {

@@ -4,6 +4,7 @@ const db = require('../config/db');
 // @route    POST /api/applications/apply/:driveId
 // @access   Private (Student only)
 exports.applyToDrive = async (req, res) => {
+    // Gets the drive ID from the URL.
     const driveId = req.params.driveId;
 
     try {
@@ -15,7 +16,7 @@ exports.applyToDrive = async (req, res) => {
         const studentId = studentData[0].id;
         const studentCgpa = parseFloat(studentData[0].cgpa || 0);
 
-        // 2. Fetch job drive baseline rules
+        // 2. Fetch job drive details to validate eligibility and application deadlines
         const [driveData] = await db.query('SELECT eligibility_cgpa, last_date FROM placement_drives WHERE id = ?', [driveId]);
         if (driveData.length === 0) {
             return res.status(404).json({ message: 'Placement drive matching this record does not exist.' });
@@ -35,7 +36,7 @@ exports.applyToDrive = async (req, res) => {
             });
         }
 
-        // 4. Validation: Enforce minimal academic eligibility thresholds
+        // 4. Validation for CGPA eligibility
         if (studentCgpa < parseFloat(eligibility_cgpa)) {
             return res.status(400).json({ 
                 message: `Your CGPA (${studentCgpa}) does not meet the minimum eligibility requirement (${eligibility_cgpa}) for this drive.` 
@@ -133,6 +134,7 @@ exports.getDriveApplicants = async (req, res) => {
                       i.interview_date, i.interview_time, i.interview_mode, i.meeting_link`,
             [driveId]
         );
+        // without GROUP BY, Every skill creates another row.
 
         res.status(200).json(applicants);
     } catch (error) {

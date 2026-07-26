@@ -12,7 +12,7 @@ exports.createDrive = async (req, res) => {
     }
 
     try {
-        // Find internal company ID using logged-in user's ID
+        // Find company ID using logged-in user's ID
         const [company] = await db.query('SELECT id, is_verified FROM companies WHERE user_id = ?', [req.user.id]);
         
         if (company.length === 0) {
@@ -56,13 +56,13 @@ exports.getAllDrives = async (req, res) => {
             if (company.length > 0) {
                 const companyId = company[0].id;
 
-                // Only fetch drives belonging strictly to THIS company profile
+                // This returns only that company's drives, sorted by last date ascending (soonest first)
                 const [myDrives] = await db.query(
                     `SELECT pd.*, c.company_name, c.website 
                      FROM placement_drives pd
                      JOIN companies c ON pd.company_id = c.id
                      WHERE pd.company_id = ?
-                     ORDER BY pd.last_date ASC`,
+                     ORDER BY pd.last_date ASC`,   // It sorts placement drives by the application deadline
                     [companyId]
                 );
                 return res.status(200).json(myDrives);
@@ -95,11 +95,10 @@ exports.getAllDrives = async (req, res) => {
 // @route    GET /api/drives/:id
 // @access   Private
 
-// ( Not used yet but kept for future upgrades to allow students to view drive details before applying )
 exports.getDriveById = async (req, res) => {
     try {
         const [drive] = await db.query(
-            `SELECT pd.*, c.company_name, c.bio AS company_bio, c.location AS company_location, c.website AS company_website 
+            `SELECT pd.*, c.company_name, c.description AS company_bio, c.location AS company_location, c.website AS company_website 
              FROM placement_drives pd
              JOIN companies c ON pd.company_id = c.id
              WHERE pd.id = ?`,
