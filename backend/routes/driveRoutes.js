@@ -3,14 +3,14 @@ const router = express.Router();
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 const { createDrive, getAllDrives, getDriveById } = require('../controllers/driveController');
 
-// All endpoints in this ecosystem require user validation
+// Apply Authentication
 router.use(protect);
 
-// Enforce identity verification on both endpoints securely
+// router.route('/') represents /api/drives
 router.route('/')
     .get(getAllDrives) 
-    .post(authorizeRoles('Company'), createDrive); // Keep your exact middleware check string
+    .post(authorizeRoles('Company'), createDrive); // Should only be done by companies.
 
-router.get('/:id', getDriveById);
+router.get('/:id', getDriveById);  // Get a specific drive by ID. This can be accessed by both students and companies.
 
 module.exports = router;

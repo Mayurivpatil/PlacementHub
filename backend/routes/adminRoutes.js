@@ -13,17 +13,14 @@ const {
 router.use(protect);
 
 // Admin exclusive routes
-router.get('/dashboard-stats', authorizeRoles('Admin'), getAdminStats);
-router.get('/reports/:type', authorizeRoles('Admin'), getReportData);
-
-// Student accessible analytical metrics
-router.get('/student-metrics', authorizeRoles('Student'), getStudentDashboardMetrics);
+router.get('/dashboard-stats', authorizeRoles('Admin'), getAdminStats);  // Returns dashboard statistics.
+router.get('/reports/:type', authorizeRoles('Admin'), getReportData);   // Generates different reports depending on - req.params.type
 
 // Company approvals routing array
-router.get('/pending-companies', authorizeRoles('Admin'), getPendingCompanies);
-router.put('/approve-company/:id', authorizeRoles('Admin'), approveCompany);
+router.get('/pending-companies', authorizeRoles('Admin'), getPendingCompanies);    // Returns companies waiting for approval.
+router.put('/approve-company/:id', authorizeRoles('Admin'), approveCompany);       // Approves a registered company.
 
 // Fetch company metadata profiles 
-router.get('/company-profile/:id', authorizeRoles('Admin'), getCompanyProfile);
+router.get('/company-profile/:id', authorizeRoles('Admin'), getCompanyProfile);    // Allows Admin to inspect any company's profile.
 
 module.exports = router;

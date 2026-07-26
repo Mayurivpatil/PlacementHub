@@ -1,8 +1,15 @@
+/*
+This file defines four APIs:
+Company/Admin
+Schedule an interview
+Student
+View upcoming interview schedule
+View interview history */
+
 const express = require('express');
 const router = express.Router();
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
-const { 
-    updateApplicationStatus, 
+const {
     scheduleInterview, 
     getStudentSchedule,
     getStudentHistoryLogs
@@ -11,12 +18,11 @@ const {
 // All interview routes require the user to be logged in
 router.use(protect);
 
-// Company & Admin Routes (For updating stage status or setting up interviews)
-router.put('/status/:applicationId', authorizeRoles('Company', 'Admin'), updateApplicationStatus);
+// Company & Admin Routes (For setting up interviews)
 router.post('/schedule', authorizeRoles('Company', 'Admin'), scheduleInterview);
 
-// Student Routes (For pulling down personalized upcoming slots)
-router.get('/my-schedule', authorizeRoles('Student'), getStudentSchedule);
-router.get('/my-history', authorizeRoles('Student'), getStudentHistoryLogs);
+// Student Routes
+router.get('/my-schedule', authorizeRoles('Student'), getStudentSchedule);    // Upcoming interviews
+router.get('/my-history', authorizeRoles('Student'), getStudentHistoryLogs);  // Shows completed interview history. (selected, rejected)
 
 module.exports = router;
