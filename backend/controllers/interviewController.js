@@ -87,7 +87,7 @@ exports.getStudentSchedule = async (req, res) => {
              JOIN placement_drives pd ON a.drive_id = pd.id
              JOIN companies c ON pd.company_id = c.id
              WHERE a.student_id = ?
-               AND i.interview_date >= CURDATE()  // Only fetch upcoming interviews
+               AND i.interview_date >= CURDATE()  /* Only fetch upcoming interviews */
              ORDER BY i.interview_date ASC, i.interview_time ASC`,
             [student[0].id]
         );
