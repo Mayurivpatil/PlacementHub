@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../api";
+import API from "../api"; // Axios instance
 import AcademicProfileTab from "../components/dashboard/AcademicProfileTab";
 import ExploreJobsTab from "../components/dashboard/ExploreJobsTab";
 import InterviewSlotsTab from "../components/dashboard/InterviewSlotsTab";
@@ -18,7 +18,7 @@ const StudentDashboard = () => {
   const [myApplications, setMyApplications] = useState({});
   const [interviewSlots, setInterviewSlots] = useState([]);
 
-  // Form & Loading States
+  // Editing profile
   const [academicForm, setAcademicForm] = useState({
     branch: "",
     cgpa: "",
@@ -29,7 +29,7 @@ const StudentDashboard = () => {
   const [newSkill, setNewSkill] = useState("");
   const [resumeFile, setResumeFile] = useState(null);
   const [message, setMessage] = useState({ text: "", isError: false });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  // Used while applying.
 
   useEffect(() => {
     const cachedName = localStorage.getItem("name");
@@ -40,11 +40,12 @@ const StudentDashboard = () => {
     fetchJobFeeds();
   }, []);
 
+  // Reset toast message when switching tabs
   useEffect(() => {
     setMessage({ text: "", isError: false });
   }, [activeTab]);
 
-  // Helper utility to calculate unique slot metric based on Company name + Job Role composite key
+  // calculate unique slot metric based on Company name + Job Role (This avoids duplicate interview count.)
   const calculateUniqueSlotsCount = (slots) => {
     if (!slots || slots.length === 0) return 0;
     const uniqueKeys = new Set();
@@ -76,7 +77,7 @@ const StudentDashboard = () => {
 
   const fetchDashboardMetrics = async () => {
     try {
-      const res = await API.get("/admin/student-metrics");
+      const res = await API.get("/student/metrics");
       
       const slotsRes = await API.get("/interviews/my-schedule");
       setInterviewSlots(slotsRes.data);
@@ -93,30 +94,37 @@ const StudentDashboard = () => {
     }
   };
 
-  const fetchJobFeeds = async () => {
-    try {
-      const drivesRes = await API.get("/drives");
-      setAvailableDrives(drivesRes.data);
+const fetchJobFeeds = async () => {
+  try {
+    const drivesRes = await API.get("/drives");
+    setAvailableDrives(drivesRes.data);
 
-      const appsRes = await API.get("/applications/my-applications");
-      const appsMap = {};
-      appsRes.data.forEach((app) => {
-        const id = app.drive_id || app.driveId || app.id;
-        if (id) appsMap[id] = app;
-      });
+    const appsRes = await API.get("/applications/my-applications");
+    // convert the applications array into an object.
+    const appsMap = {};
+    appsRes.data.forEach((app) => {
+      // const id = app.drive_id || app.driveId || app.id;
+      const id = app.drive_id;
+      if (id) appsMap[id] = app;
+    });
 
-      setMyApplications(appsMap);
-    } catch (err) {
-      console.error("Error setting up job feeds", err);
-    }
-  };
+    setMyApplications(appsMap);
+
+    // Update metric count directly based on returned applications length
+    setMetrics((prev) => ({
+      ...prev,
+      appliedCompanies: appsRes.data.length,
+    }));
+  } catch (err) {
+    console.error("Error setting up job feeds", err);
+  }
+};
 
   const fetchMyInterviewSchedule = async () => {
     try {
       const res = await API.get("/interviews/my-schedule");
       setInterviewSlots(res.data);
-      
-      // Update tracking on separate explicit tab interactions
+
       const uniqueCount = calculateUniqueSlotsCount(res.data);
       setMetrics((prev) => ({ ...prev, upcomingInterviews: uniqueCount }));
     } catch (err) {
