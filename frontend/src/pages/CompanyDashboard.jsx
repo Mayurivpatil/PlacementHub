@@ -35,12 +35,15 @@ const CompanyDashboard = () => {
     contact_email: "",
     description: "",
   });
+
   const [driveForm, setDriveForm] = useState({
     job_role: "",
-    job_description: "",
-    eligibility_criteria: "",
-    package: "",
-    application_deadline: "",
+    salaryPackage: "",
+    eligibility_cgpa: "",
+    location: "",
+    last_date: "",
+    drive_date: "",
+    description: "",
   });
 
   const [message, setMessage] = useState({ text: "", isError: false });
@@ -102,7 +105,7 @@ const CompanyDashboard = () => {
 
   const handleStatusUpdate = async (applicationId, nextStatus) => {
     try {
-      // 🔍 Ensure this path targets applications instead of interviews:
+      //  Ensure this path targets applications instead of interviews:
       await API.put(`/applications/status/${applicationId}`, {
         status: nextStatus,
       });
@@ -221,24 +224,19 @@ const CompanyDashboard = () => {
 
   const handleCreateDrive = async (e) => {
     e.preventDefault();
-    const cleanPackageString = driveForm.package
-      ? String(driveForm.package).replace(/[^0-9.]/g, "")
-      : "0";
-    const parsedPackage = Number(cleanPackageString) || 0;
-    const parsedEligibility = parseFloat(driveForm.eligibility_criteria) || 0;
-
     const payload = {
       job_role: driveForm.job_role,
-      package: parsedPackage,
-      location: companyProfile?.location || "Remote",
-      eligibility_cgpa: parsedEligibility,
-      last_date: driveForm.application_deadline,
-      drive_date: driveForm.application_deadline,
-      description: driveForm.job_description,
+      salaryPackage: driveForm.salaryPackage, 
+      location: driveForm.location || companyProfile?.location || "Remote",
+      eligibility_cgpa: parseFloat(driveForm.eligibility_cgpa) || 0,
+      last_date: driveForm.last_date,
+      drive_date: driveForm.drive_date || driveForm.last_date,
+      description: driveForm.description || driveForm.job_description,
     };
 
     if (
       !payload.job_role ||
+      !payload.salaryPackage ||
       !payload.description ||
       payload.eligibility_cgpa <= 0 ||
       !payload.last_date
@@ -256,12 +254,15 @@ const CompanyDashboard = () => {
         "🎉 New recruitment drive published live to student feeds!",
         false,
       );
+      // Reset form state cleanly
       setDriveForm({
         job_role: "",
-        job_description: "",
-        eligibility_criteria: "",
-        package: "",
-        application_deadline: "",
+        salaryPackage: "",
+        eligibility_cgpa: "",
+        location: "",
+        last_date: "",
+        drive_date: "",
+        description: "",
       });
       fetchOurDrives();
       setActiveTab("drives");
@@ -305,7 +306,7 @@ const CompanyDashboard = () => {
       </header>
 
       {/* Main Container Layout */}
-      <main className="max-w-7xl w-full mx-auto p-6 grid grid-cols-1 md:grid-cols-4 gap-6 flex-grow">
+      <main className="max-w-7xl w-full mx-auto p-6 grid grid-cols-1 md:grid-cols-4 gap-6 grow">
         {/* Navigation Sidebar */}
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-2 h-fit">
           <button
@@ -346,7 +347,6 @@ const CompanyDashboard = () => {
               selectedDriveApplicants={selectedDriveApplicants}
               onStatusUpdate={handleStatusUpdate}
               onOpenScheduleModal={setSchedulingApplicant}
-              // 🔌 Wire up the click callback to save candidate data to local component state
               onOpenDetailsModal={setViewingStudentDetails}
             />
           )}

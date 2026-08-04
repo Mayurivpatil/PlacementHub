@@ -51,7 +51,7 @@ const CompanyDetailsModal = ({ company, onClose }) => {
                       href={company.website.startsWith("http") ? company.website : `https://${company.website}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 font-semibold hover:underline break-all max-w-[240px] text-right"
+                      className="text-indigo-600 font-semibold hover:underline break-all max-w-60 text-right"
                     >
                       {company.website}
                     </a>
@@ -62,7 +62,7 @@ const CompanyDetailsModal = ({ company, onClose }) => {
 
                 <div className="p-3.5 flex justify-between items-center text-sm">
                   <span className="text-slate-400 font-medium">HR Email Address</span>
-                  <span className="text-slate-700 font-semibold break-all max-w-[240px] text-right">
+                  <span className="text-slate-700 font-semibold break-all max-w-60 text-right">
                     {displayEmail}
                   </span>
                 </div>
