@@ -1,6 +1,5 @@
-// src/App.jsx (Final Updated Fragment)
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import AdminDashboard from './pages/AdminDashboard'; // <-- 1. Import your new Admin component here
+import AdminDashboard from './pages/AdminDashboard'; 
 import CompanyDashboard from './pages/CompanyDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
