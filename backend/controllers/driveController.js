@@ -4,41 +4,41 @@ const db = require('../config/db');
 // @route    POST /api/drives
 // @access   Private (Company only)
 exports.createDrive = async (req, res) => {
-    const { job_role, package, location, eligibility_cgpa, last_date, drive_date, description } = req.body;
+  const { job_role, salaryPackage, location, eligibility_cgpa, last_date, drive_date, description } = req.body;
 
-    // Validation
-    if (!job_role || !package || !eligibility_cgpa || !last_date || !drive_date) {
-        return res.status(400).json({ message: 'Please fill in all required eligibility and job fields.' });
+  // Validation check
+  if (!job_role || !salaryPackage || !eligibility_cgpa || !last_date || !drive_date) {
+    return res.status(400).json({ message: 'Please fill in all required eligibility and job fields.' });
+  }
+
+  try {
+    // Find company ID using logged-in user's ID
+    const [company] = await db.query('SELECT id, is_verified FROM companies WHERE user_id = ?', [req.user.id]);
+    
+    if (company.length === 0) {
+      return res.status(404).json({ message: 'Company profile not found.' });
     }
 
-    try {
-        // Find company ID using logged-in user's ID
-        const [company] = await db.query('SELECT id, is_verified FROM companies WHERE user_id = ?', [req.user.id]);
-        
-        if (company.length === 0) {
-            return res.status(404).json({ message: 'Company profile not found.' });
-        }
-
-        //  Ensure the admin has verified this company before allowing drive creation
-        if (!company[0].is_verified) {
-            return res.status(403).json({ message: 'Your company profile is pending Admin verification. You cannot create drives yet.' });
-        }
-
-        const companyId = company[0].id;
-
-        // Insert drive data
-        await db.query(
-            `INSERT INTO placement_drives 
-            (company_id, job_role, package, location, eligibility_cgpa, last_date, drive_date, description) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)` ,
-            [companyId, job_role, package, location, eligibility_cgpa, last_date, drive_date, description]
-        );
-
-        res.status(201).json({ message: 'Placement drive created successfully!' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error while creating placement drive.' });
+    //  Ensure the admin has verified this company before allowing drive creation
+    if (!company[0].is_verified) {
+      return res.status(403).json({ message: 'Your company profile is pending Admin verification. You cannot create drives yet.' });
     }
+
+    const companyId = company[0].id;
+
+    // // Insert drive data
+    await db.query(
+      `INSERT INTO placement_drives 
+       (company_id, job_role, package, location, eligibility_cgpa, last_date, drive_date, description) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [companyId, job_role, salaryPackage, location, eligibility_cgpa, last_date, drive_date, description]
+    );
+
+    res.status(201).json({ message: 'Placement drive created successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error while creating placement drive.' });
+  }
 };
 
 // @desc     Get all placement drives (Filtered strictly for companies, global for students/admins)
