@@ -1,13 +1,17 @@
 import { useState } from 'react';
+// Link is used for navigation between pages. (/login, /register)
+// useNavigate is used when you want to navigate programmatically using JavaScript. (/student-dashboard)
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../api';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const navigate = useNavigate();  // This creates the navigate function.
 
+    // e means event object. When the user types into an input, the browser generates an event.
     const handleChange = (e) => {
+        // ...fromData is a spread operator that copies the existing values first.
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
