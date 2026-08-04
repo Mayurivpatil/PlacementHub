@@ -1,9 +1,5 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-<<<<<<< HEAD
-import AdminDashboard from './pages/AdminDashboard'; 
-=======
 import AdminDashboard from './pages/AdminDashboard';
->>>>>>> 16e67d8 (Changes)
 import CompanyDashboard from './pages/CompanyDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
