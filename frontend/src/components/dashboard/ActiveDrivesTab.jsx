@@ -2,9 +2,9 @@ import React from "react";
 
 const ActiveDrivesTab = ({
   myDrives,
-  expandedDriveId,
-  onFetchApplicants,
-  selectedDriveApplicants,
+  expandedDriveId,   // Which drive is currently expanded
+  onFetchApplicants,  // Function that fetches applicants from backend.
+  selectedDriveApplicants,  // Array containing all applicants of the selected drive.
   onStatusUpdate,
   onOpenScheduleModal,
   onOpenDetailsModal,

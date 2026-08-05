@@ -1,4 +1,4 @@
-
+// Generate and view different placement reports.
 const ReportsTab = ({ reportType, reportData, onReportTypeChange }) => {
   return (
     <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-6 space-y-4">

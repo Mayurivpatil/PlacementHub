@@ -1,9 +1,12 @@
+// Interview scheduling model
 const ScheduleModal = ({ schedulingApplicant, interviewForm, setInterviewForm, modalLoading, onClose, onSubmit }) => {
+  // Contains the interview schedule student's information.
   if (!schedulingApplicant) return null;
 
-  // Handle mode change to clear opposite fields and keep object state clean
-  const handleModeChange = (newMode) => {
+    // This function changes interview mode (Online or Offline).  
+    const handleModeChange = (newMode) => {
     setInterviewForm({
+      // storing interview details.
       ...interviewForm,
       interview_mode: newMode,
       // Clear meeting link if changing to offline, clear venue if changing to online

@@ -29,7 +29,7 @@ const OverviewTab = ({ metrics, branchAnalytics }) => {
         <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex justify-between items-center">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Placed Candidates</span>
-            <h4 className="text-2xl font-black text-slate-900 mt-1 text-emerald-600">{metrics.selectedStudents}</h4>
+            <h4 className="text-2xl font-black mt-1 text-slate-900">{metrics.selectedStudents}</h4>
           </div>
           <div className="text-2xl p-2 bg-emerald-50 rounded-xl">✅</div>
         </div>
@@ -54,8 +54,8 @@ const OverviewTab = ({ metrics, branchAnalytics }) => {
             <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
               {branchAnalytics.map((branchItem, idx) => {
                 const percentage = branchItem.total_students > 0 
-                  ? ((branchItem.placed_students / branchItem.total_students) * 100).toFixed(1) 
-                  : '0.0';
+                  ? ((branchItem.placed_students / branchItem.total_students) * 100)
+                  : '0';
                 return (
                   <tr key={idx} className="hover:bg-slate-50/40">
                     <td className="px-5 py-3.5 font-bold text-slate-900">{branchItem.branch || "General"}</td>

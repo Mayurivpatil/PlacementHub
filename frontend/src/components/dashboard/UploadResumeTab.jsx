@@ -5,6 +5,7 @@ const UploadResumeTab = ({ profile, resumeFile, handleResumeUpload, handleFileCh
       {profile?.resume_url ? (
         <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h4 className="font-semibold text-indigo-900">Your Resume</h4>
+          {/* If the student's profile has a resume URL, show the resume information. */}
           <a href={profile.resume_url} target="_blank" rel="noreferrer" className="bg-indigo-600 hover:bg-indigo-700 text-white text-center px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm">
             View Document 📄
           </a>

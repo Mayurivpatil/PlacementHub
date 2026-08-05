@@ -22,7 +22,7 @@ const StudentDetailsModal = ({ student, onClose }) => {
         </div>
 
         {/* Content Section */}
-        <div className="space-y-6 flex-grow">
+        <div className="space-y-6 grow">
           
           {/* Section 1: Academic Overview */}
           <div className="space-y-3">

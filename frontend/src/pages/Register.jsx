@@ -19,7 +19,7 @@ const Register = () => {
         try {
             await API.post('/auth/register', formData);
             setMessage('Registration successful! Redirecting to login...');
-            setTimeout(() => navigate('/login'), 2500);
+            setTimeout(() => navigate('/login'), 2000);  // setTimeout delays execution.
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Try again.');
         }
@@ -29,10 +29,10 @@ const Register = () => {
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-12 bg-slate-50 antialiased font-sans">
             
             {/* Left Decorative/Branding Panel - Identical to Login to preserve flow theme */}
-            <div className="hidden md:flex md:col-span-5 lg:col-span-7 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 p-12 flex-col justify-between relative overflow-hidden">
+            <div className="hidden md:flex md:col-span-5 lg:col-span-7 bg-linear-to-br from-indigo-900 via-indigo-800 to-slate-900 p-12 flex-col justify-between relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-400 blur-3xl"></div>
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-emerald-400 blur-3xl"></div>
+                    <div className="absolute top-[-20%] left-[-10%] w-150 h-150 rounded-full bg-indigo-400 blur-3xl"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-100 h-100 rounded-full bg-emerald-400 blur-3xl"></div>
                 </div>
                 
                 <div className="relative z-10">

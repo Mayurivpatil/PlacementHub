@@ -5,17 +5,18 @@ import ReportsTab from '../components/dashboard/ReportsTab';
 import VerificationTab from '../components/dashboard/VerificationTab';
 
 const AdminDashboard = () => {
+  // Stores current selected tab.
   const [activeTab, setActiveTab] = useState('verification');
-  const [pendingCompanies, setPendingCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [pendingCompanies, setPendingCompanies] = useState([]);  // Stores all companies waiting for approval.
+  const [loading, setLoading] = useState(true);      // Shows loading spinner.
   const [message, setMessage] = useState('');
   
   const [viewingCompanyDetails, setViewingCompanyDetails] = useState(null);
-  const [metrics, setMetrics] = useState(null);
-  const [branchAnalytics, setBranchAnalytics] = useState([]);
+  const [metrics, setMetrics] = useState(null);    // Stores dashboard statistics.
+  const [branchAnalytics, setBranchAnalytics] = useState([]);    // Stores department-wise statistics.
 
-  const [reportType, setReportType] = useState('student-placement');
-  const [reportData, setReportData] = useState([]);
+  const [reportType, setReportType] = useState('student-placement');    // Stores selected report (company-wise or student-wise or branch-wise).
+  const [reportData, setReportData] = useState([]);          // Stores generated report.
 
   useEffect(() => {
     fetchPendingCompanies();
@@ -25,7 +26,8 @@ const AdminDashboard = () => {
   const fetchPendingCompanies = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token'); 
+      // Retrieve the JWT token from local storage for authentication
+      const token = localStorage.getItem('token');    
       if (!token) {
         setMessage("No login token found. Please log in again.");
         return;
@@ -35,6 +37,7 @@ const AdminDashboard = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          // Include the JWT token in the Authorization header (JWT token is sent.)
           'Authorization': `Bearer ${token}` 
         }
       });
@@ -135,6 +138,7 @@ const AdminDashboard = () => {
 
       const data = await response.json();
       if (response.ok) {
+        // Remove the approved company from the pending list
         setPendingCompanies(pendingCompanies.filter(company => company.id !== companyId));
         alert('Company verified successfully!');
       } else {

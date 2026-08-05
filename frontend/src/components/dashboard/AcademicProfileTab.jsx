@@ -1,4 +1,5 @@
 const AcademicProfileTab = ({
+  // Props allow a parent component to send information to a child component.
   profile,
   skills,
   academicForm,
@@ -117,7 +118,7 @@ const AcademicProfileTab = ({
             type="text"
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
-            className="flex-grow px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+            className="grow px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
             placeholder="Add skill tag (e.g. React, Python)"
           />
           <button

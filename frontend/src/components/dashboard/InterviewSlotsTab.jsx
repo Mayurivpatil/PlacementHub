@@ -3,9 +3,11 @@ import { useMemo } from 'react';
 const InterviewSlotsTab = ({ interviewSlots }) => {
   
   // ⚡ Filter out older schedules: group by company + job role, and keep the absolute latest entry
+  // useMemo -  Calculate the latest interview slots and remember the result.
   const latestInterviewSlots = useMemo(() => {
     if (!interviewSlots || interviewSlots.length === 0) return [];
 
+    // The purpose is to keep one interview record per company + job role.
     const uniqueSlotsMap = {};
 
     interviewSlots.forEach((slot) => {
@@ -26,7 +28,7 @@ const InterviewSlotsTab = ({ interviewSlots }) => {
     });
 
     return Object.values(uniqueSlotsMap);
-  }, [interviewSlots]);
+  }, [interviewSlots]);   // Recalculate the memoized value when interviewSlots changes.
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">

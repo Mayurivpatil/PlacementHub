@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, handleApply }) => {
-  // State map to track individual card expansion states via drive ID strings
+  // This stores which company's details are expanded.
   const [visibleCompanyInfo, setVisibleCompanyInfo] = useState({});
   
   // 🔍 Interactive Filter States
@@ -9,6 +9,7 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
   const [eligibilityFilter, setEligibilityFilter] = useState('all'); // 'all' or 'eligible'
   const [statusFilter, setStatusFilter] = useState('active'); // 'all', 'active', 'closed'
 
+  // This opens and closes company information.
   const toggleCompanyProfile = (driveId) => {
     setVisibleCompanyInfo((prev) => ({
       ...prev,
@@ -17,10 +18,11 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
   };
 
 // ⚡ Process filtering and sorting efficiently using useMemo
+// With useMemo - React remembers the previous result. (It recalculates only if the data changes)
   const processedDrives = useMemo(() => {
     const studentCgpa = parseFloat(profile?.cgpa || 0);
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);  // This removes time.
 
     return [...availableDrives]
       // 1. Filter based on Search & Control options
@@ -35,7 +37,7 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
         const isEligible = studentCgpa >= requiredCgpa;
         const matchesEligibility = eligibilityFilter === 'all' || (eligibilityFilter === 'eligible' && isEligible);
 
-        // Status computation
+        // Deadline Check
         const deadlineDate = new Date(drive.last_date);
         deadlineDate.setHours(0, 0, 0, 0);
         const isExpired = today > deadlineDate;
@@ -46,19 +48,21 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
 
         let matchesStatus = true;
         
-        // Active drives are either not expired OR the student is actively progressing in them
+        // Even if the deadline has passed, students who already reached later stages should still see that drive.
         if (statusFilter === 'active') {
-          matchesStatus = !isExpired || hasAdvancedStatus;
+          matchesStatus = !isExpired || hasAdvancedStatus;    // Show active drives or already shortlisted drives.
         }
-        // Closed drives are expired AND the student does not have an ongoing/advanced pipeline stage there
+
         if (statusFilter === 'closed') {
-          matchesStatus = isExpired && !hasAdvancedStatus;
+          matchesStatus = isExpired && !hasAdvancedStatus;    // Deadline passed and not shortlisted/interviewed/placed
         }
 
         return matchesSearch && matchesEligibility && matchesStatus;
       })
-      // 2. Keep the descending (DSC) deadline sort order intact
+      // 2. Keep the descending (DSC) order. Latest deadline first.
       .sort((a, b) => new Date(b.last_date) - new Date(a.last_date));
+
+      // If any one changes react recalculates otherwise it returns the previous result.
   }, [availableDrives, searchQuery, eligibilityFilter, statusFilter, profile, myApplications]); 
 
   return (
@@ -164,7 +168,7 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
               >
                 {/* Upper Header Row */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="space-y-1 flex-grow">
+                  <div className="space-y-1 grow">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-lg font-bold text-gray-900">{drive.job_role}</h3>
                       
