@@ -4,7 +4,7 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
   // This stores which company's details are expanded.
   const [visibleCompanyInfo, setVisibleCompanyInfo] = useState({});
   
-  // 🔍 Interactive Filter States
+  // Interactive Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [eligibilityFilter, setEligibilityFilter] = useState('all'); // 'all' or 'eligible'
   const [statusFilter, setStatusFilter] = useState('active'); // 'all', 'active', 'closed'
@@ -17,7 +17,7 @@ const ExploreJobsTab = ({ availableDrives, myApplications, profile, loading, han
     }));
   };
 
-// ⚡ Process filtering and sorting efficiently using useMemo
+// Process filtering and sorting efficiently using useMemo
 // With useMemo - React remembers the previous result. (It recalculates only if the data changes)
   const processedDrives = useMemo(() => {
     const studentCgpa = parseFloat(profile?.cgpa || 0);

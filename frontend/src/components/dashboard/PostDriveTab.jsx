@@ -1,3 +1,4 @@
+
 const PostDriveTab = ({ driveForm, setDriveForm, onSubmit }) => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -62,7 +63,7 @@ const PostDriveTab = ({ driveForm, setDriveForm, onSubmit }) => {
             onChange={(e) =>
               setDriveForm({
                 ...driveForm,
-                eligibility_cgpa: e.target.value, // Changed from eligibility_criteria
+                eligibility_cgpa: e.target.value,
               })
             }
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
@@ -84,7 +85,7 @@ const PostDriveTab = ({ driveForm, setDriveForm, onSubmit }) => {
             onChange={(e) =>
               setDriveForm({
                 ...driveForm,
-                last_date: e.target.value, // Changed from application_deadline
+                last_date: e.target.value,
               })
             }
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
@@ -103,7 +104,7 @@ const PostDriveTab = ({ driveForm, setDriveForm, onSubmit }) => {
             rows="4"
             value={driveForm.description || ""}
             onChange={(e) =>
-              setDriveForm({ ...driveForm, description: e.target.value }) // Changed from job_description
+              setDriveForm({ ...driveForm, description: e.target.value })
             }
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm resize-none"
             placeholder="Detail daily roles, core technical expectations, stack metrics..."
