@@ -15,7 +15,12 @@ const adminRoutes = require('./routes/adminRoutes');
 dotenv.config();
 const app = express();
 
-app.use(cors());
+// Configure CORS cleanly
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Mount Routes
@@ -35,8 +40,10 @@ db.query('SELECT 1')
     .then(() => {
         console.log('✅ Connected to MySQL Database.');
         const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
+        
+        // 👈 Added '0.0.0.0' to force binding across all network adapters (IPv4 + IPv6)
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`🚀 Server running on http://127.0.0.1:${PORT}`);
         });
     })
     .catch(err => {
