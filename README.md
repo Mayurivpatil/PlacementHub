@@ -4,6 +4,8 @@
   <strong>A role-based campus recruitment portal for administrators, recruiters, and students.</strong>
 </p>
 
+---
+
 PlacementHub brings campus placement workflows into one portal. It supports company approval, placement-drive creation, student applications, resume uploads, interview scheduling, and placement reporting through tailored dashboards for every user role.
 
 ## ✨ Highlights
