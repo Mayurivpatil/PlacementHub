@@ -41,7 +41,7 @@ db.query('SELECT 1')
         console.log('✅ Connected to MySQL Database.');
         const PORT = process.env.PORT || 5000;
         
-        // 👈 Added '0.0.0.0' to force binding across all network adapters (IPv4 + IPv6)
+        // Added '0.0.0.0' to force binding across all network adapters (IPv4 + IPv6)
         app.listen(PORT, '0.0.0.0', () => {
             console.log(`🚀 Server running on http://127.0.0.1:${PORT}`);
         });
