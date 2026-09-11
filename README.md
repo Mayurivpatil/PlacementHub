@@ -4,15 +4,6 @@
   <strong>A role-based campus recruitment portal for administrators, recruiters, and students.</strong>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?logo=react&logoColor=white" alt="React and Vite" />
-  <img src="https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?logo=nodedotjs&logoColor=white" alt="Node.js and Express" />
-  <img src="https://img.shields.io/badge/Database-MySQL-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
-  <img src="https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens&logoColor=white" alt="JWT authentication" />
-</p>
-
----
-
 PlacementHub brings campus placement workflows into one portal. It supports company approval, placement-drive creation, student applications, resume uploads, interview scheduling, and placement reporting through tailored dashboards for every user role.
 
 ## ✨ Highlights
