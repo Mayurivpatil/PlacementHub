@@ -17,11 +17,11 @@ PlacementHub brings campus placement workflows into one portal. It supports comp
 
 ## ✨ Highlights
 
-| 👩‍💼 Administrator | 🏢 Company Recruiter | 🎓 Student |
-|---|---|---|
+| 👩‍💼 Administrator              | 🏢 Company Recruiter    | 🎓 Student                |
+| ----------------------------- | ----------------------- | ------------------------- |
 | Approve company registrations | Create placement drives | Maintain academic profile |
-| Review placement analytics | Manage applicants | Discover active drives |
-| Generate placement reports | Schedule interviews | Apply and track progress |
+| Review placement analytics    | Manage applicants       | Discover active drives    |
+| Generate placement reports    | Schedule interviews     | Apply and track progress  |
 
 ## 🚀 Features
 
@@ -46,13 +46,13 @@ PlacementHub brings campus placement workflows into one portal. It supports comp
 
 ## 🧰 Tech Stack
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 19, React Router, Vite, Tailwind CSS, Axios |
-| **Backend** | Node.js, Express 5 |
-| **Database** | MySQL with `mysql2` |
+| Layer              | Technologies                                       |
+| ------------------ | -------------------------------------------------- |
+| **Frontend**       | React 19, React Router, Vite, Tailwind CSS, Axios  |
+| **Backend**        | Node.js, Express 5                                 |
+| **Database**       | MySQL with `mysql2`                                |
 | **Authentication** | JSON Web Tokens (JWT) and role-based authorization |
-| **File storage** | Cloudinary and Multer for resume uploads |
+| **File storage**   | Cloudinary and Multer for resume uploads           |
 
 ## 📁 Project Structure
 
@@ -102,9 +102,6 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-> [!IMPORTANT]
-> Configure the MySQL database named by `DB_NAME` before starting the API. A database schema or migration file is not currently included in this repository, so the required tables must be provisioned separately.
-
 ### 3. Run the application
 
 Start the API from the `backend` directory:
@@ -126,14 +123,14 @@ Open the Vite URL shown in the terminal, normally `http://localhost:5173`.
 
 ## 📜 Available Commands
 
-| Directory | Command | Description |
-|---|---|---|
-| `frontend` | `npm run dev` | Start the Vite development server |
-| `frontend` | `npm run build` | Create a production frontend build |
-| `frontend` | `npm run lint` | Run ESLint |
-| `frontend` | `npm run preview` | Preview a production build |
-| `backend` | `npm start` | Start the Express server |
-| `backend` | `npm run dev` | Start the Express server with Nodemon |
+| Directory  | Command           | Description                           |
+| ---------- | ----------------- | ------------------------------------- |
+| `frontend` | `npm run dev`     | Start the Vite development server     |
+| `frontend` | `npm run build`   | Create a production frontend build    |
+| `frontend` | `npm run lint`    | Run ESLint                            |
+| `frontend` | `npm run preview` | Preview a production build            |
+| `backend`  | `npm start`       | Start the Express server              |
+| `backend`  | `npm run dev`     | Start the Express server with Nodemon |
 
 ## 🔌 API Configuration
 
@@ -141,8 +138,8 @@ The frontend calls the API at `http://localhost:5000/api`. The backend allows lo
 
 ## 🔐 User Roles
 
-| Role | Access |
-|---|---|
-| `Admin` | Company approvals, analytics, and reports |
-| `Company` | Company profile, placement drives, and applicant workflows |
+| Role      | Access                                                        |
+| --------- | ------------------------------------------------------------- |
+| `Admin`   | Company approvals, analytics, and reports                     |
+| `Company` | Company profile, placement drives, and applicant workflows    |
 | `Student` | Profile, job discovery, applications, and interview schedules |
